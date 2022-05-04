@@ -1,8 +1,8 @@
 import javax.swing.JFrame;
 
 public class Main {
-	// Constants
-	public static final double GRAVITY = 9.8;
+	public static double g = 9.8;
+	public static double fps = 60;
 	
 	public static void main(String[] args) {
 		Mass m = new Mass(v(100, 100), new Vector[] {v(0, 0), v(0, -10), v(-10, 0)}, 1);
