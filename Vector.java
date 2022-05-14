@@ -4,6 +4,7 @@ public class Vector {
 	// Member variables
 	private double x, y;
 	
+	// Constructors
 	public Vector(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -14,6 +15,7 @@ public class Vector {
 		this.y = v.y;
 	}
 	
+	// Methods
 	public double len() {
 		return Math.sqrt(x*x + y*y);
 	}
@@ -32,8 +34,23 @@ public class Vector {
 		return x*v.x + y*v.y;
 	}
 	
-	public double to(Vector v) {
+	public double dist(Vector v) {
 		return Math.sqrt((x-v.x)*(x-v.x) + (y-v.y)*(y-v.y));
+	}
+	
+	public void add(double x, double y) {
+		this.x += x;
+		this.y += y;
+	}
+	
+	public void add(Vector v) {
+		x += v.x;
+		y += v.y;
+	}
+	
+	public void subtract(Vector v) {
+		x -= v.x;
+		y -= v.y;
 	}
 	
 	// Getters
