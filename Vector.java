@@ -16,6 +16,21 @@ public class Vector {
 	}
 	
 	// Methods
+	public void rotate(double theta) {
+		double sin = Math.sin(theta);
+		double cos = Math.cos(theta);
+		
+		double t = x;
+		x = x * cos - y * sin;
+		y = t * sin + y * cos;
+	}
+	
+	public void rotate(double theta, Vector origin) {
+		subtract(origin);
+		rotate(theta);
+		add(origin);
+	}
+	
 	public double len() {
 		return Math.sqrt(x*x + y*y);
 	}
@@ -51,6 +66,15 @@ public class Vector {
 	public void subtract(Vector v) {
 		x -= v.x;
 		y -= v.y;
+	}
+	
+	public void multiply(double l) {
+		x *= l;
+		y *= l;
+	}
+	
+	public void divide(double l) {
+		multiply(1 / l);
 	}
 	
 	// Getters

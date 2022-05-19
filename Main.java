@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import java.lang.Thread;
 
 public class Main {
-	public static double g = 9.8;
-	public static double fps = 60;
+	public static final Vector g = new Vector(0, -9.8);
+	public static final double fps = 60;
 	
 	public static final int WIDTH = 750;
 	public static final int HEIGHT = 500;
@@ -19,13 +19,19 @@ public class Main {
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setVisible(true);
 		
+		Mass[] masses = {new Mass(v(Math.random() * WIDTH, Math.random() * HEIGHT), 1, (int)(Math.random() * 0xffffff),
+								  v(Math.random() * 200 - 100, Math.random() * 200 - 100),
+								  v(Math.random() * 200 - 100, Math.random() * 200 - 100),
+								  v(Math.random() * 200 - 100, Math.random() * 200 - 100))};
+		
+		panel.setPolys(masses);
+		
 		while (true) {
-			Thread.sleep(1000);
+			Thread.sleep(10);
 			
-			panel.setPolys(new Mass[] {new Mass(v(Math.random() * WIDTH, Math.random() * HEIGHT), 1, (int)(Math.random() * 0xffffff),
-												v(Math.random() * 200 - 100, Math.random() * 200 - 100),
-												v(Math.random() * 200 - 100, Math.random() * 200 - 100),
-												v(Math.random() * 200 - 100, Math.random() * 200 - 100))});
+			masses[0].move(0.1, g);
+			
+			panel.setPolys(masses);
 		}
 	}
 	

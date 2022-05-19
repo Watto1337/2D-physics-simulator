@@ -32,8 +32,12 @@ public class PolyPanel extends JPanel {
 			int[] vertY = new int[numVerts];
 			
 			for (int j = 0; j < numVerts; j++) {
+				masses[i].getVertices()[j].rotate(masses[i].getAngle());
+				
 				vertX[j] = (int)(masses[i].getVertices()[j].getX() + masses[i].getPos().getX());
 				vertY[j] = (int)(getHeight() - masses[i].getVertices()[j].getY() - masses[i].getPos().getY());
+				
+				masses[i].getVertices()[j].rotate(-masses[i].getAngle());
 			}
 			
 			polyX.add(vertX);
