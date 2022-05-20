@@ -5,53 +5,22 @@ import java.awt.Graphics;
 
 public class PolyPanel extends JPanel {
 	// Member variables
-	private ArrayList<int[]> polyX;
-	private ArrayList<int[]> polyY;
-	
-	private int numPolys;
 	private Mass[] polys;
 	
-	private Vector p;
-	private int r;
+	public Vector p;
+	public int r;
 	
 	// Constructors
-	public PolyPanel(Vector point) {
-		polyX = new ArrayList<>();
-		polyY = new ArrayList<>();
+	public PolyPanel() {
+		polys = new Mass[0];
 		
-		p = point;
+		p = new Vector(0, 0);
 		r = 0;
 	}
 	
 	// Methods
-	public void setPolys(Mass[] masses) {
-		polyX.clear();
-		polyY.clear();
-		numPolys = masses.length;
-		
+	public void drawPolys(Mass[] masses) {
 		polys = masses;
-		
-		for (int i = 0; i < masses.length; i++) {
-			int numVerts = masses[i].getVertices().length;
-			
-			int[] vertX = new int[numVerts];
-			int[] vertY = new int[numVerts];
-			
-			for (int j = 0; j < numVerts; j++) {
-				Vector v = masses[i].getVertices()[j];
-				
-				v.rotate(masses[i].getAngle());
-				
-				vertX[j] = (int)(v.getX() + masses[i].getPos().getX());
-				vertY[j] = (int)(getHeight() - v.getY() - masses[i].getPos().getY());
-				
-				v.rotate(-masses[i].getAngle());
-			}
-			
-			polyX.add(vertX);
-			polyY.add(vertY);
-		}
-		
 		updateUI();
 	}
 	
@@ -59,16 +28,12 @@ public class PolyPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		g.drawOval((int)p.getX() - r, getHeight() - (int)p.getY() - r, r*2, r*2);
-		g.fillOval((int)p.getX() - 5, getHeight() - (int)p.getY() - 5, 10, 10);
+		g.drawOval((int)p.getX() - r, (int)p.getY() - r, r*2, r*2);
+		g.fillOval((int)p.getX() - 5, (int)p.getY() - 5, 10, 10);
 		
-		for (int i = 0; i < numPolys; i++) {
+		for (int i = 0; i < polys.length; i++) {
 			g.setColor(polys[i].getColor());
-			g.fillPolygon(polyX.get(i), polyY.get(i), polyX.get(i).length);
+			g.fillPolygon(polys[i].getPoly());
 		}
-	}
-	
-	public void setr(int d) {
-		r = d;
 	}
 }

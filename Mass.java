@@ -1,11 +1,13 @@
 import java.lang.Math;
 
 import java.awt.Color;
+import java.awt.Polygon;
 
 public class Mass {
 	// Member variables
 	private Vector pos;
 	private Vector vel;
+	
 	private double rot;
 	private double rotVel;
 	
@@ -13,45 +15,51 @@ public class Mass {
 	private double area;
 	
 	private Vector[] vertices;
+	private Polygon polygon;
 	
 	private Color color;
 	
 	// Constructors
-	public Mass(Vector pos, double density, int color, Vector... vertices) {
+	public Mass(Vector pos, double rot, double density, int color, Vector... vertices) {
 		this.pos = new Vector(pos);
 		this.vel = new Vector(0, 0);
-		this.density = density;
 		
-		this.rot = 0;
+		this.rot = rot;
 		this.rotVel = 0;
 		
 		this.color = new Color(color);
 		
-		area = 0;
+		this.vertices = new Vector[vertices.length + 1];
+		this.polygon = new Polygon();
+		
+		this.density = density;
+		this.area = 0;
 		double centerX = 0;
 		double centerY = 0;
 		
-		for (int i = 0, j = 1; i < vertices.length; i++, j = (j + 1) % vertices.length) {
-			double partialArea = vertices[i].getX() * vertices[j].getY() - vertices[i].getY() * vertices[j].getX();
+		if (vertices.length >= 3) {
+			// Finding the area and center of mass
+			for (int i = 0, j = 1; i < vertices.length; i++, j = (j + 1) % vertices.length) {
+				double partialArea = vertices[i].getX() * vertices[j].getY() - vertices[i].getY() * vertices[j].getX();
+				
+				centerX += partialArea * (vertices[i].getX() + vertices[j].getX());
+				centerY += partialArea * (vertices[i].getY() + vertices[j].getY());
+				area += partialArea;
+			}
 			
-			centerX += partialArea * (vertices[i].getX() + vertices[j].getX());
-			centerY += partialArea * (vertices[i].getY() + vertices[j].getY());
-			area += partialArea;
+			centerX /= area * 3;
+			centerY /= area * 3;
+			area = Math.abs(area / 2);
+			
+			for (int i = 0; i < vertices.length; i++)
+				this.vertices[i] = new Vector(vertices[i].getX() - centerX, vertices[i].getY() - centerY);
+			
+			this.vertices[vertices.length] = this.vertices[0];
 		}
-		
-		centerX /= area * 3;
-		centerY /= area * 3;
-		area = Math.abs(area / 2);
-		
-		this.vertices = new Vector[vertices.length + 1];
-		for (int i = 0; i < vertices.length; i++) {
-			this.vertices[i] = new Vector(vertices[i].getX() - centerX, vertices[i].getY() - centerY);
-		}
-		
-		this.vertices[vertices.length] = this.vertices[0];
 	}
 	
-	public static Mass random(Vector pos, double density, int color, int numPoints, double radius) {
+	// Generating a mass with random vertices
+	public static Mass random(Vector pos, double rot, double density, int color, int numPoints, double radius) {
 		Vector[] vertices = new Vector[numPoints];
 		
 		for (int i = 0; i < numPoints; i++) {
@@ -60,7 +68,7 @@ public class Mass {
 			vertices[i].rotate(Math.PI * 2 * i / numPoints);
 		}
 		
-		return new Mass(pos, density, color, vertices);
+		return new Mass(pos, rot, density, color, vertices);
 	}
 	
 	// Methods
@@ -91,7 +99,6 @@ public class Mass {
 			double x = d;
 			
 			d = Math.min(d, m.getDistance(v));
-			
 			
 			if (d != x) p.set(v);
 			
@@ -145,15 +152,34 @@ public class Mass {
 	
 	// Getters
 	public Vector getPos() {return pos;}
-	public double getAngle() {return rot;}
+	public Vector getVel() {return vel;}
+	public double getRot() {return rot;}
+	public double getRotVel() {return rotVel;}
 	public double getDensity() {return density;}
 	public double getArea() {return area;}
 	public double getMass() {return density * area;}
 	public Vector[] getVertices() {return vertices;}
 	public Color getColor() {return color;}
 	
+	public Polygon getPoly() {
+		polygon.npoints = 0;
+		
+		for (int i = 0; i < vertices.length - 1; i++) {
+			vertices[i].rotate(rot);
+			vertices[i].add(pos);
+			
+			polygon.addPoint((int)vertices[i].getX(), (int)vertices[i].getY());
+			
+			vertices[i].subtract(pos);
+			vertices[i].rotate(-rot);
+		}
+		
+		return polygon;
+	}
+	
 	// Setters
-	public void setAngle(double rot) {this.rot = rot;}
+	public void setRot(double rot) {this.rot = rot;}
+	public void setRotVel(double rotVel) {this.rotVel = rotVel;}
 	public void setDensity(double density) {this.density = density;}
 	public void setColor(int color) {this.color = new Color(color);}
 }
