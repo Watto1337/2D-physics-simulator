@@ -123,25 +123,33 @@ public class Mass {
 		return d;
 	}
 	
-	// Get the distance from a point to the nearest point on the edge of the mass
+	// Get the distance from a point to the nearest point on the edge of the mass using the following formula:
+	// d = ||v - ((v.b)/(||b||^2)) * b||
 	public double getDistance(Vector v) {
 		v.subtract(pos);
 		v.rotate(-rot);
 		
 		double d = Double.MAX_VALUE;
+		
 		for (int i = 0; i < vertices.length - 1; i++) {
 			Vector a = vertices[i];
 			Vector b = new Vector(vertices[i+1]);
 			
+			// Setting the first point to be the origin
 			v.subtract(a);
 			b.subtract(a);
 			
+			// Getting the nearest point on the line to v
 			double r = Math.min(Math.max(v.dot(b) / b.lenSquared(), 0), 1);
 			b.multiply(r);
 			
-			d = Math.min(d, v.dist(b));
-			
 			v.add(a);
+			b.add(a);
+			
+			// Getting the distance and negating it if it is inside the polygon (closer to the center than the line is)
+			double l = v.dist(b);
+			if (l < Math.abs(d))
+				d = l * (v.lenSquared() > b.lenSquared() ? 1 : -1);
 		}
 		
 		v.rotate(rot);

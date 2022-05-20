@@ -19,7 +19,7 @@ public class Main {
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setVisible(true);
 		
-		Mass[] masses = {Mass.random(v(panel.getWidth() / 2, panel.getHeight() / 8), 0, 1, (int)(Math.random() * 0xffffff), (int)(Math.random() * 7 + 3), 100),
+		Mass[] masses = {Mass.random(v(panel.getWidth() / 2, panel.getHeight() / 3), 0, 1, (int)(Math.random() * 0xffffff), (int)(Math.random() * 7 + 3), 100),
 						 Mass.random(v(panel.getWidth() / 2, panel.getHeight() / 2), 0, 1, (int)(Math.random() * 0xffffff), (int)(Math.random() * 7 + 3), 100)};
 		
 		masses[0].setRotVel(0.1);
