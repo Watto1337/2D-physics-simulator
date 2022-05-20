@@ -31,18 +31,18 @@ public class Vector {
 		add(origin);
 	}
 	
+	public void rotate(double theta, double originX, double originY) {
+		add(-originX, -originY);
+		rotate(theta);
+		add(originX, originY);
+	}
+	
 	public double len() {
 		return Math.sqrt(x*x + y*y);
 	}
 	
 	public double lenSquared() {
 		return x*x + y*y;
-	}
-	
-	public void setLen(double l) {
-		double len = len();
-		x *= l / len;
-		y *= l / len;
 	}
 	
 	public double dot(Vector v) {
@@ -84,4 +84,20 @@ public class Vector {
 	// Setters
 	public void setX(double x) {this.x = x;}
 	public void setY(double y) {this.y = y;}
+	
+	public void set(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void set(Vector v) {
+		x = v.x;
+		y = v.y;
+	}
+	
+	public void setLen(double l) {
+		double len = len();
+		x *= l / len;
+		y *= l / len;
+	}
 }

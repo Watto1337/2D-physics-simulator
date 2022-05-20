@@ -51,6 +51,18 @@ public class Mass {
 		this.vertices[vertices.length] = this.vertices[0];
 	}
 	
+	public static Mass random(Vector pos, double density, int color, int numPoints, double radius) {
+		Vector[] vertices = new Vector[numPoints];
+		
+		for (int i = 0; i < numPoints; i++) {
+			vertices[i] = new Vector(Math.random() * radius, 0);
+			
+			vertices[i].rotate(Math.PI * 2 * i / numPoints);
+		}
+		
+		return new Mass(pos, density, color, vertices);
+	}
+	
 	// Methods
 	// Move the mass by an amount dependent on time and constant acceleration (gravity)
 	public void move(double t, Vector acc) {
@@ -66,29 +78,60 @@ public class Mass {
 		acc.divide(t);
 		
 		rot = (rot + rotVel) % (Math.PI * 2);
-		
-		//System.out.println(vel.len() + " " + pos.len()+ " " + acc.len());
 	}
 	
+	// Get the distance to another mass
+	public double getDistance(Mass m, Vector p) {
+		double d = Double.MAX_VALUE;
+		
+		for (Vector v : vertices) {
+			v.add(pos);
+			double x = d;
+			d = Math.min(d, m.getDistance(v));
+			if (d != x) {
+				p.set(v);
+				//p.add(pos);
+			}
+			v.subtract(pos);
+		}
+		
+		for (Vector v : m.vertices) {
+			v.add(m.pos);
+			double x = d;
+			d = Math.min(d, getDistance(v));
+			if (d != x) {
+				p.set(v);
+				//p.add(pos);
+			}
+			v.subtract(m.pos);
+		}
+		
+		return d;
+	}
+	
+	// Get the distance from a point to the nearest point on the edge of the mass
 	public double getDistance(Vector v) {
-		v.rotate(-rot);
+		v.subtract(pos);
+		//v.rotate(-rot);
 		
 		double d = Double.MAX_VALUE;
 		for (int i = 0; i < vertices.length - 1; i++) {
-			v.subtract(vertices[i]);
-			vertices[i+1].subtract(vertices[i]);
+			Vector a = vertices[i];
+			Vector b = new Vector(vertices[i+1]);
 			
-			double r = Math.min(Math.max(v.dot(vertices[i+1]) / vertices[i+1].lenSquared(), 0), 1);
-			vertices[i+1].multiply(r);
+			v.subtract(a);
+			b.subtract(a);
 			
-			d = Math.min(d, v.dist(vertices[i+1]));
+			double r = Math.min(Math.max(v.dot(b) / b.lenSquared(), 0), 1);
+			b.multiply(r);
 			
-			vertices[i+1].divide(r);
-			vertices[i+1].add(vertices[i]);
-			v.add(vertices[i]);
+			d = Math.min(d, v.dist(b));
+			
+			v.add(a);
 		}
 		
-		v.rotate(rot);
+		//v.rotate(rot);
+		v.add(pos);
 		
 		return d;
 	}
