@@ -59,16 +59,12 @@ public class PolyPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		//g.fillOval((int)p.getX() - 5, getHeight() - (int)p.getY() - 5, 10, 10);
+		g.drawOval((int)p.getX() - r, getHeight() - (int)p.getY() - r, r*2, r*2);
+		g.fillOval((int)p.getX() - 5, getHeight() - (int)p.getY() - 5, 10, 10);
 		
 		for (int i = 0; i < numPolys; i++) {
 			g.setColor(polys[i].getColor());
 			g.fillPolygon(polyX.get(i), polyY.get(i), polyX.get(i).length);
-			
-			//g.setColor(polys[i].getColor().brighter());
-			//g.fillOval((int)polys[i].getPos().getX() - 5, getHeight() - (int)polys[i].getPos().getY() - 5, 10, 10);
-			
-			g.drawOval((int)p.getX() - r, getHeight() - (int)p.getY() - r, r*2, r*2);
 		}
 	}
 	

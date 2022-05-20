@@ -85,25 +85,32 @@ public class Mass {
 		double d = Double.MAX_VALUE;
 		
 		for (Vector v : vertices) {
+			v.rotate(rot);
 			v.add(pos);
+			
 			double x = d;
+			
 			d = Math.min(d, m.getDistance(v));
-			if (d != x) {
-				p.set(v);
-				//p.add(pos);
-			}
+			
+			
+			if (d != x) p.set(v);
+			
 			v.subtract(pos);
+			v.rotate(-rot);
 		}
 		
 		for (Vector v : m.vertices) {
+			v.rotate(m.rot);
 			v.add(m.pos);
+			
 			double x = d;
+			
 			d = Math.min(d, getDistance(v));
-			if (d != x) {
-				p.set(v);
-				//p.add(pos);
-			}
+			
+			if (d != x) p.set(v);
+			
 			v.subtract(m.pos);
+			v.rotate(-m.rot);
 		}
 		
 		return d;
@@ -112,7 +119,7 @@ public class Mass {
 	// Get the distance from a point to the nearest point on the edge of the mass
 	public double getDistance(Vector v) {
 		v.subtract(pos);
-		//v.rotate(-rot);
+		v.rotate(-rot);
 		
 		double d = Double.MAX_VALUE;
 		for (int i = 0; i < vertices.length - 1; i++) {
@@ -130,7 +137,7 @@ public class Mass {
 			v.add(a);
 		}
 		
-		//v.rotate(rot);
+		v.rotate(rot);
 		v.add(pos);
 		
 		return d;

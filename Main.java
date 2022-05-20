@@ -29,16 +29,12 @@ public class Main {
 		while (true) {
 			Thread.sleep(50);
 			
-			//masses[0].move(0.1, g);
 			panel.setr((int)masses[0].getDistance(masses[1], p));
-			masses[0].getPos().rotate(0.05, masses[1].getPos());
-			//masses[0].getPos().add(1, 0);
+			masses[0].getPos().rotate(0.01, masses[1].getPos());
+			masses[0].setAngle(masses[0].getAngle() + 0.017);
+			masses[1].setAngle(masses[1].getAngle() + 0.023);
 			
 			panel.setPolys(masses);
-			
-			//p.add(1, 0);
-			//p.set(Math.random() * panel.getWidth(), Math.random() * panel.getHeight());
-			//p.rotate(0.1, WIDTH / 2, HEIGHT / 2);
 		}
 	}
 	
