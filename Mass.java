@@ -146,16 +146,36 @@ public class Mass {
 			v.add(a);
 			b.add(a);
 			
-			// Getting the distance and negating it if it is inside the polygon (closer to the center than the line is)
+			// Getting the distance and negating it if it is inside the polygon
 			double l = v.dist(b);
 			if (l < Math.abs(d))
-				d = l * (v.lenSquared() > b.lenSquared() ? 1 : -1);
+				d = l * (contains(v) ? -1 : 1);
 		}
 		
 		v.rotate(rot);
 		v.add(pos);
 		
 		return d;
+	}
+	
+	// Detect if the mass contains a given point
+	// It does this by finding the number of edges the point is to the left of
+	// If that is an odd number, the point is inside the mass
+	private boolean contains(Vector v) {
+		int c = 0;
+		
+		for (int i = 0; i < vertices.length - 1; i++) {
+			Vector a = vertices[i];
+			Vector b = vertices[i + 1];
+			
+			// The basic equation for determining if a point v is to the left of a line defined by two points a and b:
+			// v.x < a.x + (v.y - a.y) * (a.x - b.x) / (a.y - b.y)
+			if (((v.getY() > a.getY() && v.getY() < b.getY()) || (v.getY() > b.getY() && v.getY() < a.getY())) && a.getY() != b.getY() &&
+				v.getX() < (a.getX() + (v.getY() - a.getY()) * (a.getX() - b.getX()) / (a.getY() - b.getY())))
+				c++;
+		}
+		
+		return c % 2 == 1;
 	}
 	
 	// Getters
